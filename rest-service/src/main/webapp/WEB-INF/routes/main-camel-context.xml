@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://camel.apache.org/schema/cxf                         http://camel.apache.org/schema/cxf/camel-cxf.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<cxf:rsServer address="http://localhost:8080/rest" id="cxfConsumer" serviceClass="com.discount.web.RatesService" />
+	<camelContext id="camelContext-main-flow" trace="false" xmlns="http://camel.apache.org/schema/spring">
+		<dataFormats>
+			<xmljson id="xmljson" encoding="UTF-8"/>
+			<xmljson expandableProperties="d e" forceTopLevelObject="true" id="xmljsonWithOptions" removeNamespacePrefixes="true"
+				rootName="newRoot" skipNamespaces="true" trimSpaces="true" />
+		</dataFormats>
+		<route id="From Rest">
+			<from id="cxfrsConsumer" uri="cxfrs:bean:cxfConsumer" />
+			<log id="Print Request From Rest" message="The request details are:\n ${body}" />
+			<marshal id="_unmarshal1" ref="xmljson" />
+			<log id="print body" message="result is: ${body}" />
+		</route>
+	</camelContext>
+</beans>
